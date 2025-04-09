@@ -17,13 +17,13 @@
         </header>
 
         <section class="transaction-form">
-            <h2>Add New Transaction</h2>
+            <h2 id="formTitle">Add New Transaction</h2>
             <form id="transactionForm">
                 <select id="transactionType" required>
                     <option value="income">Income</option>
                     <option value="expense">Expense</option>
                 </select>
-                <input type="number" id="amount" placeholder="Amount" required>
+                <input type="number" id="amount" placeholder="Amount" step="0.01" required>
                 <input type="text" id="description" placeholder="Description" required>
                 <select id="category" required>
                     <option value="salary">Part-time Job</option>
@@ -35,7 +35,10 @@
                     <option value="other">Other</option>
                 </select>
                 <input type="date" id="date" required>
-                <button type="submit">Add Transaction</button>
+                <div class="form-buttons">
+                    <button type="submit" id="submitBtn">Add Transaction</button>
+                    <button type="button" id="cancelEdit" style="display: none;">Cancel</button>
+                </div>
             </form>
         </section>
 
