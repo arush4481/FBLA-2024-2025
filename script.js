@@ -1,6 +1,7 @@
 class FinanceTracker {
     constructor() {
         this.transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        this.editingId = null;
         this.initializeEventListeners();
         this.updateDisplay();
     }
@@ -8,7 +9,11 @@ class FinanceTracker {
     initializeEventListeners() {
         document.getElementById('transactionForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            this.addTransaction();
+            if (this.editingId) {
+                this.updateTransaction();
+            } else {
+                this.addTransaction();
+            }
         });
 
         document.getElementById('filterPeriod').addEventListener('change', () => {
@@ -17,6 +22,10 @@ class FinanceTracker {
 
         document.getElementById('searchTransaction').addEventListener('input', (e) => {
             this.filterTransactions(e.target.value);
+        });
+
+        document.getElementById('cancelEdit').addEventListener('click', () => {
+            this.cancelEdit();
         });
     }
 
@@ -42,10 +51,68 @@ class FinanceTracker {
         document.getElementById('transactionForm').reset();
     }
 
-    deleteTransaction(id) {
-        this.transactions = this.transactions.filter(t => t.id !== id);
+    editTransaction(id) {
+        const transaction = this.transactions.find(t => t.id === id);
+        if (!transaction) return;
+
+        // Fill the form with transaction data
+        document.getElementById('transactionType').value = transaction.type;
+        document.getElementById('amount').value = transaction.amount;
+        document.getElementById('description').value = transaction.description;
+        document.getElementById('category').value = transaction.category;
+        document.getElementById('date').value = transaction.date;
+
+        // Set editing mode
+        this.editingId = id;
+        document.getElementById('submitBtn').textContent = 'Update Transaction';
+        document.getElementById('cancelEdit').style.display = 'inline-block';
+        document.getElementById('formTitle').textContent = 'Edit Transaction';
+        
+        // Scroll to form
+        document.querySelector('.transaction-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    updateTransaction() {
+        const type = document.getElementById('transactionType').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        const description = document.getElementById('description').value;
+        const category = document.getElementById('category').value;
+        const date = document.getElementById('date').value;
+
+        // Find and update the transaction
+        this.transactions = this.transactions.map(t => {
+            if (t.id === this.editingId) {
+                return {
+                    ...t,
+                    type,
+                    amount,
+                    description,
+                    category,
+                    date
+                };
+            }
+            return t;
+        });
+
         this.saveToLocalStorage();
+        this.cancelEdit();
         this.updateDisplay();
+    }
+
+    cancelEdit() {
+        this.editingId = null;
+        document.getElementById('transactionForm').reset();
+        document.getElementById('submitBtn').textContent = 'Add Transaction';
+        document.getElementById('cancelEdit').style.display = 'none';
+        document.getElementById('formTitle').textContent = 'Add New Transaction';
+    }
+
+    deleteTransaction(id) {
+        if (confirm('Are you sure you want to delete this transaction?')) {
+            this.transactions = this.transactions.filter(t => t.id !== id);
+            this.saveToLocalStorage();
+            this.updateDisplay();
+        }
     }
 
     filterTransactions(searchTerm) {
@@ -91,6 +158,11 @@ class FinanceTracker {
         const transactionsList = document.getElementById('transactionsList');
         transactionsList.innerHTML = '';
 
+        if (transactions.length === 0) {
+            transactionsList.innerHTML = '<p class="no-transactions">No transactions found.</p>';
+            return;
+        }
+
         transactions.sort((a, b) => new Date(b.date) - new Date(a.date))
             .forEach(t => {
                 const div = document.createElement('div');
@@ -100,9 +172,10 @@ class FinanceTracker {
                         <strong>${t.description}</strong>
                         <p>${t.category} - ${t.date}</p>
                     </div>
-                    <div>
+                    <div class="transaction-actions">
                         <span>${t.type === 'income' ? '+' : '-'}$${t.amount.toFixed(2)}</span>
-                        <button onclick="financeTracker.deleteTransaction(${t.id})">Delete</button>
+                        <button class="edit-btn" onclick="financeTracker.editTransaction(${t.id})">Edit</button>
+                        <button class="delete-btn" onclick="financeTracker.deleteTransaction(${t.id})">Delete</button>
                     </div>
                 `;
                 transactionsList.appendChild(div);
