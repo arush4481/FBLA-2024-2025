@@ -67,6 +67,19 @@ button:hover {
     background-color: #2980b9;
 }
 
+.form-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+#cancelEdit {
+    background-color: #95a5a6;
+}
+
+#cancelEdit:hover {
+    background-color: #7f8c8d;
+}
+
 .filters {
     display: flex;
     gap: 15px;
@@ -110,10 +123,43 @@ button:hover {
     border-radius: 4px;
 }
 
+.transaction-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.edit-btn {
+    background-color: #f39c12;
+}
+
+.edit-btn:hover {
+    background-color: #e67e22;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
 .income {
     border-left: 4px solid #2ecc71;
 }
 
 .expense {
     border-left: 4px solid #e74c3c;
+}
+
+.no-transactions {
+    text-align: center;
+    padding: 20px;
+    color: #7f8c8d;
 }
