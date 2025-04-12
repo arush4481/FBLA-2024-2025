@@ -4,72 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Finance Tracker</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <div class="container">
+    <div id="main-app">
         <header>
-            <h1>Student Finance Tracker</h1>
-            <div class="balance-card">
-                <h2>Current Balance</h2>
-                <p id="currentBalance">$0.00</p>
+            <div class="header-content">
+                <h1><i class="fas fa-wallet"></i> Student Finance Tracker</h1>
+                <p id="current-date">Loading date...</p>
             </div>
         </header>
 
-        <section class="transaction-form">
-            <h2 id="formTitle">Add New Transaction</h2>
-            <form id="transactionForm">
-                <select id="transactionType" required>
-                    <option value="income">Income</option>
-                    <option value="expense">Expense</option>
-                </select>
-                <input type="number" id="amount" placeholder="Amount" step="0.01" required>
-                <input type="text" id="description" placeholder="Description" required>
-                <select id="category" required>
-                    <option value="salary">Part-time Job</option>
-                    <option value="allowance">Allowance</option>
-                    <option value="food">Food</option>
-                    <option value="transport">Transport</option>
-                    <option value="books">Books</option>
-                    <option value="entertainment">Entertainment</option>
-                    <option value="other">Other</option>
-                </select>
-                <input type="date" id="date" required>
-                <div class="form-buttons">
-                    <button type="submit" id="submitBtn">Add Transaction</button>
-                    <button type="button" id="cancelEdit" style="display: none;">Cancel</button>
+        <main>
+            <section class="summary-section">
+                <div class="summary-card balance">
+                    <h2><i class="fas fa-balance-scale"></i> Current Balance</h2>
+                    <p id="currentBalance">$0.00</p>
                 </div>
-            </form>
-        </section>
-
-        <section class="transaction-list">
-            <h2>Transactions</h2>
-            <div class="filters">
-                <select id="filterPeriod">
-                    <option value="all">All Time</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                </select>
-                <input type="text" id="searchTransaction" placeholder="Search transactions...">
-            </div>
-            <div id="transactionsList"></div>
-        </section>
-
-        <section class="summary">
-            <h2>Summary</h2>
-            <div class="summary-cards">
-                <div class="card">
-                    <h3>Total Income</h3>
+                <div class="summary-card income">
+                    <h2><i class="fas fa-arrow-circle-up"></i> Total Income</h2>
                     <p id="totalIncome">$0.00</p>
                 </div>
-                <div class="card">
-                    <h3>Total Expenses</h3>
+                <div class="summary-card expense">
+                    <h2><i class="fas fa-arrow-circle-down"></i> Total Expenses</h2>
                     <p id="totalExpenses">$0.00</p>
                 </div>
+                <div class="summary-card savings">
+                    <h2><i class="fas fa-piggy-bank"></i> Savings</h2>
+                    <p id="savingsAmount">$0.00</p>
+                    <div class="savings-buttons">
+                        <button id="addToSavings"><i class="fas fa-plus-circle"></i> Add</button>
+                        <button id="withdrawFromSavings"><i class="fas fa-minus-circle"></i> Withdraw</button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="main-content">
+                <section class="transaction-form">
+                    <h2 id="formTitle"><i class="fas fa-plus-circle"></i> Add New Transaction</h2>
+                    <form id="transactionForm">
+                        <div class="form-group">
+                            <label for="transactionType">Type</label>
+                            <select id="transactionType" required>
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Amount ($)</label>
+                            <input type="number" id="amount" min="0.01" step="0.01" required placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" id="description" required placeholder="e.g., Lunch, Books, Part-time job">
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" required>
+                                <optgroup label="Income">
+                                    <option value="salary">Salary/Wages</option>
+                                    <option value="allowance">Allowance</option>
+                                    <option value="gift">Gift</option>
+                                    <option value="scholarship">Scholarship/Grant</option>
+                                </optgroup>
+                                <optgroup label="Expenses">
+                                    <option value="food">Food</option>
+                                    <option value="transport">Transportation</option>
+                                    <option value="books">Books/Supplies</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="shopping">Shopping</option>
+                                    <option value="utilities">Utilities</option>
+                                    <option value="rent">Rent/Housing</option>
+                                    <option value="health">Health</option>
+                                    <option value="other">Other</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" id="submitBtn"><i class="fas fa-save"></i> Add Transaction</button>
+                            <button type="button" id="cancelEdit" style="display: none;"><i class="fas fa-times"></i> Cancel</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="transactions-section">
+                    <div class="transactions-header">
+                        <h2><i class="fas fa-list"></i> Transactions</h2>
+                        <div class="filters">
+                            <div class="filter-group">
+                                <label for="filterPeriod">Period:</label>
+                                <select id="filterPeriod">
+                                    <option value="all">All Time</option>
+                                    <option value="month">This Month</option>
+                                    <option value="week">This Week</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterType">Type:</label>
+                                <select id="filterType">
+                                    <option value="all">All</option>
+                                    <option value="income">Income</option>
+                                    <option value="expense">Expense</option>
+                                </select>
+                            </div>
+                            <div class="filter-group search">
+                                <input type="text" id="searchTransaction" placeholder="Search...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="transactionsList" class="transactions-list">
+                        <!-- Transactions will be added here dynamically -->
+                    </div>
+                </section>
             </div>
-            <div id="categoryChart"></div>
-        </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 Student Finance Tracker | Designed for students</p>
+        </footer>
     </div>
+
+    <!-- Savings Modal -->
+    <div id="savingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="savingsModalTitle">Add to Savings</h2>
+            <div class="form-group">
+                <label for="savingsAmount">Amount ($)</label>
+                <input type="number" id="savingsAmount" min="0.01" step="0.01" required placeholder="0.00">
+            </div>
+            <button id="confirmSavings">Confirm</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
